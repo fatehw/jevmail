@@ -123,7 +123,9 @@ export default function MessageList({ items, query, selectedId, onSelect, onDone
   const visible = useMemo(() => {
     const q = query.trim().toLowerCase();
     const filtered = q ? items.filter((m) => `${m.fromName} ${m.fromEmail} ${m.subject}`.toLowerCase().includes(q)) : items;
-    return [...filtered].sort((a, b) => (b.urgency ?? 0) >= 4 !== (a.urgency ?? 0) >= 4 ? ((b.urgency ?? 0) >= 4 ? 1 : -1) : b.receivedAt - a.receivedAt);
+    // Nyeste først (Potensklinikken 2026-09-30). Akutte mails står ikke længere
+    // øverst: de gamle skubbede dagens mails langt ned. Prikken markerer dem stadig.
+    return [...filtered].sort((a, b) => b.receivedAt - a.receivedAt);
   }, [items, query]);
 
   const selected = visible.find((m) => m.id === selectedId) ?? null;

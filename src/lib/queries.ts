@@ -99,9 +99,8 @@ export function listMessages(opts: { lane: Lane; includeHandled: boolean; offset
   if (opts.lane === "pending") items = items.filter((v) => v.category === null);
   else if (opts.lane !== "all") items = items.filter((v) => v.category === opts.lane);
 
-  if (opts.lane === "needs_reply") {
-    items.sort((a, b) => (b.urgency ?? 0) - (a.urgency ?? 0) || b.receivedAt - a.receivedAt);
-  }
+  // Alle bakker sorteres nyeste først (allViews() er allerede ordnet efter
+  // received_at desc). Needs reply sorterede før efter hastegrad først.
   const page = items.slice(opts.offset, opts.offset + opts.limit);
   const nextOffset = opts.offset + opts.limit < items.length ? opts.offset + opts.limit : null;
   return { items: page, nextOffset, total: items.length };
